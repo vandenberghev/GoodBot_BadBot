@@ -1,4 +1,3 @@
-# GoodBot_BadBot
+# GoodShill_BadShill
 
-Associated website to display current rankings and data:
-https://goodbot-badbot.herokuapp.com/
+A bot to rate shills on /r/CryptoCurrency

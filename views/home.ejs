@@ -1,6 +1,6 @@
 <head>
   <meta charset="UTF-8">
-    <title>GoodBot_BadBot Rankings</title>
+    <title>GoodShill_BadShill Rankings</title>
   <link rel='stylesheet' href='/styles/stylesheet.css' type="text/css"/>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
@@ -12,17 +12,17 @@
 
 <!--Display current vote tally-->
 <div class = "container">
-  <h1>Welcome to GoodBot_BadBot's Rankings</h1>
+  <h1>Welcome to GoodShill_BadShill's Rankings</h1>
   <div class="info_div">There have been <strong><%= total %></strong> votes cast:
-  <strong><%= goodCount %></strong> good bot votes and <strong><%= badCount %></strong> bad bot votes.</div>
-  <div class="row">
+  <strong><%= goodCount %></strong> good shill votes and <strong><%= badCount %></strong> bad shill votes.</div>
+  <!--div class="row">
     <div class="col-lg-6 col-md-6 col-sm-6"  id="hgb">
-      Honorary Good Bot: <a href="https://www.reddit.com/u/SirBelvedere">SirBelvedere</a>
+      Honorary Good Shill: <a href="https://www.reddit.com/u/SirBelvedere">SirBelvedere</a>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6"  id ="hbb">
-      Honorary Bad Bot: <a href="https://www.reddit.com/u/lukecis">lukecis</a>
+      Honorary Bad Shill: <a href="https://www.reddit.com/u/lukecis">lukecis</a>
     </div>
-  </div>
+  </div-->
 </div>
 
 <br>
@@ -33,9 +33,9 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
-      <h2>Best Bot Standings</h2>
+      <h2>Best Shill Standings</h2>
       <div class="info_div">
-        These are the 10 best bots sorted by the <a href="http://www.evanmiller.org/how-not-to-sort-by-average-rating.html">
+        These are the 10 best shills sorted by the <a href="http://www.evanmiller.org/how-not-to-sort-by-average-rating.html">
         Lower bound of Wilson score confidence interval for a Bernoulli parameter</a>
       </div>
     </div>
@@ -61,10 +61,10 @@ var ctx = document.getElementById("bestChart");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ["<%= bestBotName[0] %>", "<%= bestBotName[1] %>", "<%= bestBotName[2] %>", "<%= bestBotName[3] %>", "<%= bestBotName[4] %>", "<%= bestBotName[5] %>", "<%= bestBotName[6] %>", "<%= bestBotName[7] %>", "<%= bestBotName[8] %>", "<%= bestBotName[9] %>"],
+        labels: ["<%= bestShillName[0] %>", "<%= bestShillName[1] %>", "<%= bestShillName[2] %>", "<%= bestShillName[3] %>", "<%= bestShillName[4] %>", "<%= bestShillName[5] %>", "<%= bestShillName[6] %>", "<%= bestShillName[7] %>", "<%= bestShillName[8] %>", "<%= bestShillName[9] %>"],
         datasets: [{
             label: 'Inverse of the Lower Bound of Wilson Score Confidence Interval',
-            data: [<%= bestBotScore[0] %>, <%= bestBotScore[1] %>, <%= bestBotScore[2] %>, <%= bestBotScore[3] %>, <%= bestBotScore[4] %>, <%= bestBotScore[5] %>, <%= bestBotScore[6] %>, <%= bestBotScore[7] %>, <%= bestBotScore[8] %>, <%= bestBotScore[9] %>],
+            data: [<%= bestShillScore[0] %>, <%= bestShillScore[1] %>, <%= bestShillScore[2] %>, <%= bestShillScore[3] %>, <%= bestShillScore[4] %>, <%= bestShillScore[5] %>, <%= bestShillScore[6] %>, <%= bestShillScore[7] %>, <%= bestShillScore[8] %>, <%= bestShillScore[9] %>],
             backgroundColor: [
                 'rgb(51,204,0)',
                 'rgb(74,210,0)',

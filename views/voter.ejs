@@ -1,6 +1,6 @@
 <head>
   <meta charset="UTF-8">
-    <title>GoodBot_BadBot Rankings</title>
+    <title>GoodShill_BadShill Rankings</title>
   <link rel='stylesheet' href='/styles/stylesheet.css' type="text/css"/>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
@@ -13,13 +13,13 @@
 <div class="container">
   <div class="row>">
     <div class="col-lg-12">
-      <% if(bot.length == 0) { %>
-        <h2><%= voter %> has not voted for any bot yet!</h2>
+      <% if(shill.length == 0) { %>
+        <h2><%= voter %> has not voted for any shill yet!</h2>
       <% } else { %>
-        <h2><%= voter %> has voted for these bots:</h2>
+        <h2><%= voter %> has voted for these shills:</h2>
         <ul class="list-group">
-          <% for(var i = 0; i < bot.length; i++) { %>
-            <li class="list-group-item"><%= bot[i]['botName'] %></li>
+          <% for(var i = 0; i < shill.length; i++) { %>
+            <li class="list-group-item"><%= shill[i]['shillName'] %></li>
           <% } %>
         <% } %>
       </ul>

@@ -20,12 +20,12 @@ app.use(bodyParser.json());
 app.use("/", indexRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function() {
-    console.log('GoodBot_BadBot app starting on port ' + process.env.PORT);
+    console.log('GoodShill_BadShill app starting on port ' + process.env.PORT);
 });
 
-// scrapper ====================================================================
+// scraper ====================================================================
 
-// Every 2.15 seconds, call scrape() to search Reddit for new comments
+// Every 2.2 seconds, call scrape() to search Reddit for new comments
 setInterval(function() {
   script.scrape();
-}, 2150);
+}, 2200);

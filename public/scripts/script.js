@@ -20,8 +20,8 @@ r.config({requestDelay: 1000, warnings: false});
 module.exports = {
 
     /**
-     * Grab the 100 newest comments from /r/all and check if
-     * the comment says "good bot" or "bad bot". If so,
+     * Grab the 100 newest comments from /r/CryptoCurrency and check if
+     * the comment says "good shill" or "bad shill". If so,
      * obtain the parent name, commenter's name, and good/bad result
      * to store in the database.
      * */
@@ -29,7 +29,7 @@ module.exports = {
         /**
          * commentObj stores a returned promise containing 100 comments as JSON
          * */
-        var commentObj = r.getNewComments('all', {
+        var commentObj = r.getNewComments('CryptoCurrency', {
             limit: 100
         });
     
@@ -43,11 +43,11 @@ module.exports = {
                 var comment = key.body.substring(0,8).toLowerCase();
                 
                 
-                if(comment.includes("good bot")) {
+                if(comment.includes("good shill")) {
                     console.log("Found comment '" + key.body + "'");
                     _storeVote(key, "good");
                 }
-                else if(comment.includes("bad bot")) {
+                else if(comment.includes("bad shill")) {
                     console.log("Found comment '" + key.body + "'");
                     _storeVote(key, "bad");
                 }
@@ -67,6 +67,7 @@ module.exports = {
  * */
 function _storeVote(commentObj, result) {
     /**
+	* TODO VVDB 20180113: does't need to be a comment, can be a post as well
      * The type prefix ("t1_") indicates that the comment's parent is a comment
      * */
     if (commentObj.parent_id.substring(0,2) == "t1") {
@@ -74,28 +75,23 @@ function _storeVote(commentObj, result) {
         console.log("The voter is " + voterName);
         
         /**
-         * Find the username of the parent comment. This is the bot's name.
+         * Find the username of the parent comment. This is the shill's name.
          * */
         r.getComment(commentObj.parent_id).fetch().then(function (obj) {
-            var botName = obj.author.name;
+            var shillName = obj.author.name;
             var voterID = commentObj.name;
             var linkID = obj.link_id;
-            console.log("The bot is " + botName);
+            console.log("The shill is " + shillName);
             /**
-             * Check if the voter and bot name are the same. If not then
-             * send bot name, voter name, vote result, and voter ID to addToDb found in
+             * Check if the voter and shill name are the same. If not then
+             * send shill name, voter name, vote result, and voter ID to addToDb found in
              * the db.js file. This handles the database interaction and commenting.
              * */
-            if (botName != voterName) {
-                db.addToDb(botName, voterName, result, voterID, linkID);
+            if (shillName != voterName) {
+                db.addToDb(shillName, voterName, result, voterID, linkID);
             }
         });
     } else {
         console.log(voterName + " did not respond to a comment");
     }
 }
-
-
-
-
-

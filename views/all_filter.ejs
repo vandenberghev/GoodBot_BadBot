@@ -1,6 +1,6 @@
 <head>
   <meta charset="UTF-8">
-    <title>GoodBot_BadBot Rankings</title>
+    <title>GoodShill_BadShill Rankings</title>
   <link rel='stylesheet' href='/styles/stylesheet.css' type="text/css"/>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
@@ -14,22 +14,22 @@
 <div class="container">
   <div class="row>">
     <div class="col-lg-8 col-lg-offset-2">
-      <h2>Bot Rankings</h2>
+      <h2>Shill Rankings</h2>
       <table class="table table-condensed" id="allFilterTable">
         <thead>
         <tr>
           <th>Rank</th>
-          <th>Bot Name</th>
+          <th>Shill Name</th>
           <th>Score</th>
-          <th class="allFilter">Good Bot Votes</th>
-          <th class="allFilter">Bad Bot Votes</th>
+          <th class="allFilter">Good Shill Votes</th>
+          <th class="allFilter">Bad Shill Votes</th>
         </tr>
         </thead>
         <tbody>
         <% for(var i = 0; i < byBestArr.length; i++) { %>
           <tr>
             <td><%= i+1 %></td>
-            <td><a href='https://www.reddit.com/user/<%= byBestArr[i]['botName'] %>'><%= byBestArr[i]['botName'] %></a></td>
+            <td><a href='https://www.reddit.com/user/<%= byBestArr[i]['shillName'] %>'><%= byBestArr[i]['shillName'] %></a></td>
             <td><%= byBestArr[i]['ci_lower_bound'] %></td>
             <td class="allFilter"><%= byBestArr[i]['goodCount'] %></td>
             <td class="allFilter"><%= byBestArr[i]['badCount'] %></td>
