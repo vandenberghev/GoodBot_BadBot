@@ -26,6 +26,7 @@ module.exports = {
      * to store in the database.
      * */
     scrape: function() {
+		print('Trying to get comments...');
         /**
          * commentObj stores a returned promise containing 100 comments as JSON
          * */
@@ -33,6 +34,8 @@ module.exports = {
             limit: 100
         });
     
+	    print('Processing...');
+		
         commentObj.then(function(listing) {
             listing.forEach(function(key) {
                 /**
@@ -44,11 +47,11 @@ module.exports = {
                 
                 
                 if(comment.includes("good shill")) {
-                    console.log("Found comment '" + key.body + "'");
+                    print("Found comment '" + key.body + "'");
                     _storeVote(key, "good");
                 }
                 else if(comment.includes("bad shill")) {
-                    console.log("Found comment '" + key.body + "'");
+                    print("Found comment '" + key.body + "'");
                     _storeVote(key, "bad");
                 }
             });
@@ -72,7 +75,7 @@ function _storeVote(commentObj, result) {
      * */
     if (commentObj.parent_id.substring(0,2) == "t1") {
         var voterName = commentObj.author.name;
-        console.log("The voter is " + voterName);
+        print("The voter is " + voterName);
         
         /**
          * Find the username of the parent comment. This is the shill's name.
@@ -81,17 +84,23 @@ function _storeVote(commentObj, result) {
             var shillName = obj.author.name;
             var voterID = commentObj.name;
             var linkID = obj.link_id;
-            console.log("The shill is " + shillName);
+            print("The shill is " + shillName);
             /**
              * Check if the voter and shill name are the same. If not then
              * send shill name, voter name, vote result, and voter ID to addToDb found in
              * the db.js file. This handles the database interaction and commenting.
              * */
             if (shillName != voterName) {
-                db.addToDb(shillName, voterName, result, voterID, linkID);
+                console.log('Adding to DB disabled');
+				//db.addToDb(shillName, voterName, result, voterID, linkID);
             }
         });
     } else {
-        console.log(voterName + " did not respond to a comment");
+        print(voterName + " did not respond to a comment");
     }
+}
+
+function print(msg)
+{
+    console.log(new Date().toLocaleTimeString('nl-BE', { hour12: false, hour: "numeric", minute: "numeric", second: "numeric"}) + ' ' + msg);
 }
