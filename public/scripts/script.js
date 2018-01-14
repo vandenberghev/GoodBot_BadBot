@@ -134,8 +134,8 @@ function checkAndAddShill(shillObj, commentObj, result)
 	 * the db.js file. This handles the database interaction and commenting.
 	 * */
 	if (shillName != voterName) {
-		console.log('Adding to DB disabled');
-		//db.addToDb(shillName, voterName, result, voterID, linkID);
+		//console.log('Adding to DB disabled');
+		db.addToDb(shillName, voterName, result, voterID, linkID);
 	}
 }
 
