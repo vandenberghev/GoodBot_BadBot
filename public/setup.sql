@@ -31,3 +31,7 @@ CREATE TABLE shill_voter (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+CREATE TABLE link (
+    link_id varchar(255) NOT NULL PRIMARY KEY
+) ENGINE=InnoDB;
