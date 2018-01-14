@@ -17,6 +17,12 @@ CREATE TABLE voter (
 CREATE TABLE shill_voter (
     shill_id int(11) NOT NULL,
     voter_id int(11) NOT NULL,
+	vote varchar(4) NOT NULL, 
+	time varchar(50) NOT NULL, 
+	vote_hour int(2) NOT NULL, 
+	vote_day int(2) NOT NULL, 
+	vote_month int(2) NOT NULL, 
+	vote_year int(4) NOT NULL,
     PRIMARY KEY (shill_id, voter_id),
     FOREIGN KEY (shill_id) REFERENCES shill (shill_id)
         ON UPDATE CASCADE
