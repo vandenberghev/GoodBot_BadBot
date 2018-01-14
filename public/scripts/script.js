@@ -30,7 +30,7 @@ module.exports = {
         /**
          * commentObj stores a returned promise containing 100 comments as JSON
          * */
-        var commentObj = r.getNewComments('CryptoCurrency', {
+        var commentObj = r.getNewComments('test', {
             limit: 100
         });
     
@@ -43,9 +43,13 @@ module.exports = {
                  * If so, pass the comment object and vote to storeVote() to 
                  * handle the database insertions and commenting
                  * */
-                var comment = key.body.substring(0,8).toLowerCase();
-                
-                
+				 
+				 //console.log("%o", key);
+				 //print(key.body);
+				 //print('--------------');
+                var comment = key.body.substring(0,10).toLowerCase();
+                //print(comment);
+				
                 if(comment.includes("good shill")) {
                     print("Found comment '" + key.body + "'");
                     _storeVote(key, "good");
@@ -70,34 +74,46 @@ module.exports = {
  * */
 function _storeVote(commentObj, result) {
     /**
-	* TODO VVDB 20180113: does't need to be a comment, can be a post as well
+	* TODO VVDB 20180113: does't need to be a comment, can be a submission (t3) as well
      * The type prefix ("t1_") indicates that the comment's parent is a comment
      * */
+	var voterName = commentObj.author.name;
+	
     if (commentObj.parent_id.substring(0,2) == "t1") {
-        var voterName = commentObj.author.name;
-        print("The voter is " + voterName);
-        
-        /**
-         * Find the username of the parent comment. This is the shill's name.
-         * */
-        r.getComment(commentObj.parent_id).fetch().then(function (obj) {
-            var shillName = obj.author.name;
-            var voterID = commentObj.name;
-            var linkID = obj.link_id;
-            print("The shill is " + shillName);
-            /**
-             * Check if the voter and shill name are the same. If not then
-             * send shill name, voter name, vote result, and voter ID to addToDb found in
-             * the db.js file. This handles the database interaction and commenting.
-             * */
-            if (shillName != voterName) {
-                console.log('Adding to DB disabled');
-				//db.addToDb(shillName, voterName, result, voterID, linkID);
-            }
-        });
-    } else {
-        print(voterName + " did not respond to a comment");
+        //print("The voter replied to a comment and is " + voterName);
+        r.getComment(commentObj.parent_id).fetch().then(function(obj){checkAndAddShill(obj, commentObj, result);});
     }
+	else if (commentObj.parent_id.substring(0,2) == "t3")
+	{
+        //print(voterName + " replied to a post");
+		r.getSubmission(commentObj.parent_id).fetch().then(function(obj){checkAndAddShill(obj, commentObj, result);});
+    }
+}
+
+function checkAndAddShill(shillObj, commentObj, result)
+{
+	if (shillObj === null)
+	{
+		print("Parent could not be fetched");
+		return;
+	}
+	
+	var voterName = commentObj.author.name;
+	var shillName = shillObj.author.name;
+	var voterID = commentObj.name;
+	var linkID = shillObj.link_id;
+	
+	print('Processing [' + result + '] vote by [' + voterName + '] for shill [' + shillName + ']');
+	
+	/**
+	 * Check if the voter and shill name are the same. If not then
+	 * send shill name, voter name, vote result, and voter ID to addToDb found in
+	 * the db.js file. This handles the database interaction and commenting.
+	 * */
+	if (shillName != voterName) {
+		console.log('Adding to DB disabled');
+		//db.addToDb(shillName, voterName, result, voterID, linkID);
+	}
 }
 
 function print(msg)
