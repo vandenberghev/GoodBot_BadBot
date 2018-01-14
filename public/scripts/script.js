@@ -1,6 +1,11 @@
 // set up ======================================================================
+
+const NUMBER_OF_POSTS	= 100;
+
 var snoowrap            = require('snoowrap'),
-    db                  = require('./db.js');
+    db                  = require('./db.js'),
+	treatedCache		= new Array(NUMBER_OF_POSTS),
+	cachePointer		= 0;
 
 // configuration ===============================================================
 
@@ -26,40 +31,51 @@ module.exports = {
      * to store in the database.
      * */
     scrape: function() {
-		print('Trying to get comments...');
-        /**
-         * commentObj stores a returned promise containing 100 comments as JSON
-         * */
+		print('Fetching comments and processing...');
+
+		// commentObj stores a returned promise containing X comments as JSON
         var commentObj = r.getNewComments('test', {
-            limit: 100
+            limit: NUMBER_OF_POSTS
         });
-    
-	    print('Processing...');
 		
-        commentObj.then(function(listing) {
+		dump(treatedCache);
+			
+        commentObj.then(function(listing) {		
             listing.forEach(function(key) {
-                /**
-                 * Check if comment meets the search criteria. 
-                 * If so, pass the comment object and vote to storeVote() to 
-                 * handle the database insertions and commenting
-                 * */
-				 
-				 //console.log("%o", key);
-				 //print(key.body);
-				 //print('--------------');
-                var comment = key.body.substring(0,10).toLowerCase();
-                //print(comment);
+				var commentId = key.id;
+				//Check if we haven't already processed this comment
 				
-                if(comment.includes("good shill")) {
-                    print("Found comment '" + key.body + "'");
-                    _storeVote(key, "good");
-                }
-                else if(comment.includes("bad shill")) {
-                    print("Found comment '" + key.body + "'");
-                    _storeVote(key, "bad");
-                }
+				if (!treatedCache.includes(commentId)) 
+				{
+					/**
+					 * Check if comment meets the search criteria. 
+					 * If so, pass the comment object and vote to storeVote() to 
+					 * handle the database insertions and commenting
+					 * */
+
+					var comment = key.body.substring(0,10).toLowerCase();
+					
+					if(comment.includes("good shill")) {
+						print("Found comment '" + key.body + "'");
+						_storeVote(key, "good");
+					}
+					else if(comment.includes("bad shill")) {
+						print("Found comment '" + key.body + "'");
+						_storeVote(key, "bad");
+					}
+					
+					markAsTreated(commentId);
+				}
+				/*
+				else
+				{
+					print("ALREADY TREATED");
+				}
+				*/
             });
         });
+		
+		print('Waiting for next cycle...');
     }
 };
 
@@ -88,6 +104,13 @@ function _storeVote(commentObj, result) {
         //print(voterName + " replied to a post");
 		r.getSubmission(commentObj.parent_id).fetch().then(function(obj){checkAndAddShill(obj, commentObj, result);});
     }
+}
+
+function markAsTreated(commentId) //Rolling array
+{
+	treatedCache[cachePointer++] = commentId;
+	if (cachePointer >= NUMBER_OF_POSTS) cachePointer = 0;
+	//print('cachePointer [' + cachePointer + ']');
 }
 
 function checkAndAddShill(shillObj, commentObj, result)
@@ -119,4 +142,9 @@ function checkAndAddShill(shillObj, commentObj, result)
 function print(msg)
 {
     console.log(new Date().toLocaleTimeString('nl-BE', { hour12: false, hour: "numeric", minute: "numeric", second: "numeric"}) + ' ' + msg);
+}
+
+function dump(o)
+{
+	console.log("%o", o);
 }

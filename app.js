@@ -28,4 +28,4 @@ app.listen(process.env.PORT, process.env.IP, function() {
 // Every 2.2 seconds, call scrape() to search Reddit for new comments
 setInterval(function() {
   script.scrape();
-}, 2200);
+}, 10000);

@@ -121,8 +121,9 @@ function _shillScore (shillName, vName, vote, voter_id, link_id) {
         } else {
             console.log(shillName + " is likely not a shill: " + shillScore);
         }
-		*/
+		
     });
+	*/
 }
 
 /**
