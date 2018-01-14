@@ -80,16 +80,17 @@ function _formatUName (username) {
 * @returns No return value
 * */
 function _shillScore (shillName, vName, vote, voter_id, link_id) {
-    
+    /*
     var counter = 30;
     var total = 0;
     var shillScore = 0;
     
     r.getUser(shillName).getComments({limit: counter}).then(function(listing) {
-                
+    */     
         /**
         * If the shill has less than (counter) comments, it is too new and defaults to 0.
         * */
+		/*
         if (listing.length < counter) {
             console.log(shillName + " has too few comments");
         } else {
@@ -105,17 +106,22 @@ function _shillScore (shillName, vName, vote, voter_id, link_id) {
             shillScore = (total/dataPoints).toFixed(2);
             console.log(shillName + ": " + shillScore);
         }
+		*/
         /**
          * A value of 0.3 or higher is a good indicator this is actually a shill
          * */
+		 /*
         if (shillScore >= 0.3) {
             console.log(shillName + " is a shill: " + shillScore);
+			*/
             _addShill(shillName);
             _addVoter(vName);
             _voterShillMatch(shillName, vName, vote, voter_id, link_id);
+			/*
         } else {
             console.log(shillName + " is likely not a shill: " + shillScore);
         }
+		*/
     });
 }
 
@@ -279,11 +285,12 @@ function _addVoteToShill(shillName, vote) {
 * */
 function _replyToComment(vName, shillName, voter_id, link_id) {
     
-    var message = "Thank you " + _formatUName(vName) + " for voting on " + _formatUName(shillName) + ".  \n\n" +
+    var message = "Thank you, " + _formatUName(vName) + ", for voting on " + _formatUName(shillName) + ".  \n\n" +
         "This bot wants to find the best and worst shills on /r/CryptoCurrency." +
 		/* [You can view results here](" + process.env.RESULTS_LINK + ")." + */
         "  \n\n ***  \n\n" +
-        "^^Even ^^if ^^I ^^don't ^^reply ^^to ^^your ^^comment, ^^I'm ^^still ^^listening ^^for ^^votes. ";
+        "^^Even ^^if ^^I ^^don't ^^reply ^^to ^^your ^^comment, ^^I'm ^^still ^^listening ^^for ^^votes. " +
+		"\n\n^^I'm ^^still ^^work ^^in ^^progress.";
         /* "^^Check ^^the ^^webpage ^^to ^^see ^^if ^^your ^^vote ^^registered!"; */
     
     var sql = "SELECT link_id FROM link WHERE link_id = ?;";
