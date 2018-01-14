@@ -286,48 +286,81 @@ function _addVoteToShill(shillName, vote) {
 * */
 function _replyToComment(vName, shillName, voter_id, link_id) {
     
-    var message = "Thank you, " + _formatUName(vName) + ", for voting on " + _formatUName(shillName) + ".  \n\n" +
-        "This bot wants to find the best and worst shills on /r/CryptoCurrency." +
-		/* [You can view results here](" + process.env.RESULTS_LINK + ")." + */
-        "  \n\n ***  \n\n" +
-        "^^Even ^^if ^^I ^^don't ^^reply ^^to ^^your ^^comment, ^^I'm ^^still ^^listening ^^for ^^votes. " +
-		"\n\n^^I'm ^^still ^^work ^^in ^^progress.";
-        /* "^^Check ^^the ^^webpage ^^to ^^see ^^if ^^your ^^vote ^^registered!"; */
-    
-    var sql = "SELECT link_id FROM link WHERE link_id = ?;";
-    
-    con.query(sql, [link_id], function(err, result) {
-        if (err) {
-            throw (err);
-        }
-        /**
-         * link_id is not in database if result is empty
-         * */
-        if (Object.keys(result).length == 0) {
-            /**
-             * Reply to voter with a link to the results page if there is no reply in the thread.
-             * */
-            console.log("Replying to " + vName);
-            r.getSubmission(voter_id).reply(message);
-            
-            /**
-             * Insert the link_id into the link table
-             * */
-            var sql = "INSERT INTO link (link_id) VALUES (?)";
-            
-            con.query(sql, [link_id], function(err, result) {
-                if (err) {
-                    if (err.code == "ER_DUP_ENTRY") {
-                        console.log(link_id + " is already in the database");
-                    } else { 
-                      throw(err);
-                    }
-                } else {
-                    console.log(link_id + " was inserted into the link table");
-                }
-            });
-        } else {
-            console.log("Thread " + link_id + " already has a shill comment");
-        }
-    });
+	var goodOrBad = "SELECT goodCount, badCount FROM shill WHERE shillName = ? LIMIT 1;";
+	con.query(goodOrBad, [shillName], function(err, result) {
+		if (Object.keys(result).length == 1)
+		{
+			var good = result[0]['goodCount'];
+			var bad = result[0]['badCount'];
+
+			var shillType = 'unknown';
+			var majority = 0;
+			var minority = 0;
+			
+			if (good > bad)
+			{
+				majority = good;
+				minority = bad;
+				shillType = 'good';
+			}
+			else if (bad > good)
+			{
+				majority = bad;
+				minority = good;
+				shillType = 'bad';
+			}
+			else
+			{
+				majority = good;
+				minority = bad;
+				shillType = 'neutral';
+			}
+			
+			var message = "Thanks for your vote, " + _formatUName(vName) + ".\n\n" +
+			"So far, people seem to think " + _formatUName(shillName) + " is a " + shillType + " shill with " + majority + " vote" + (majority > 1 ? "s" : "") + " against " + minority + ". \n\n" +
+			/* [You can view results here](" + process.env.RESULTS_LINK + ")." + */
+			"  \n\n ***  \n\n" +
+			"^^This ^^bot ^^wants ^^to ^^find ^^the ^^best ^^and ^^worst ^^shills ^^on ^^/r/CryptoCurrency." +
+			"^^Even ^^if ^^I ^^don't ^^reply ^^to ^^your ^^comment, ^^I'm ^^still ^^listening ^^for ^^votes. " +
+			"\n\n^^P.S. ^^I'm ^^still ^^work ^^in ^^progress.";
+			/* "^^Check ^^the ^^webpage ^^to ^^see ^^if ^^your ^^vote ^^registered!"; */
+		
+			var sql = "SELECT link_id FROM link WHERE link_id = ?;";
+			
+			con.query(sql, [link_id], function(err, result) {
+				if (err) {
+					throw (err);
+				}
+				/**
+				 * link_id is not in database if result is empty
+				 * */
+				if (Object.keys(result).length == 0) {
+					/**
+					 * Reply to voter with a link to the results page if there is no reply in the thread.
+					 * */
+					console.log("Replying to " + vName);
+					r.getSubmission(voter_id).reply(message);
+					
+					/**
+					 * Insert the link_id into the link table
+					 * */
+					var sql = "INSERT INTO link (link_id) VALUES (?)";
+					
+					con.query(sql, [link_id], function(err, result) {
+						if (err) {
+							if (err.code == "ER_DUP_ENTRY") {
+								console.log(link_id + " is already in the database");
+							} else { 
+							  throw(err);
+							}
+						} else {
+							console.log(link_id + " was inserted into the link table");
+						}
+					});
+				} else {
+					console.log("Thread " + link_id + " already has a shill comment");
+				}
+			});
+		}
+	});
 }
