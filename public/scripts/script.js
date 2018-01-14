@@ -1,6 +1,8 @@
 // set up ======================================================================
 
-const NUMBER_OF_POSTS	= 100;
+const NUMBER_OF_POSTS	= 500;
+//const SUBREDDIT			= 'CryptoCurrency';
+const SUBREDDIT			= 'test';
 
 var snoowrap            = require('snoowrap'),
     db                  = require('./db.js'),
@@ -30,22 +32,21 @@ module.exports = {
      * obtain the parent name, commenter's name, and good/bad result
      * to store in the database.
      * */
-    scrape: function() {
+    scrape: function()
+	{
 		print('Fetching comments and processing...');
 
 		// commentObj stores a returned promise containing X comments as JSON
-        var commentObj = r.getNewComments('test', {
-            limit: NUMBER_OF_POSTS
-        });
+        var commentObj = r.getNewComments(SUBREDDIT, { limit: NUMBER_OF_POSTS });	
+		var newComments = 0;
 		
-		dump(treatedCache);
-			
         commentObj.then(function(listing) {		
             listing.forEach(function(key) {
-				var commentId = key.id;
 				//Check if we haven't already processed this comment
+				var commentId = key.id;
+				var treated = treatedCache.includes(commentId); 
 				
-				if (!treatedCache.includes(commentId)) 
+				if (!treated) 
 				{
 					/**
 					 * Check if comment meets the search criteria. 
@@ -64,18 +65,17 @@ module.exports = {
 						_storeVote(key, "bad");
 					}
 					
+					newComments++;
 					markAsTreated(commentId);
 				}
-				/*
-				else
+				/*else
 				{
-					print("ALREADY TREATED");
-				}
-				*/
+					//print("ALREADY TREATED");
+				}*/
             });
+			
+			print(newComments + ' new comments treated.');
         });
-		
-		print('Waiting for next cycle...');
     }
 };
 
@@ -134,8 +134,8 @@ function checkAndAddShill(shillObj, commentObj, result)
 	 * the db.js file. This handles the database interaction and commenting.
 	 * */
 	if (shillName != voterName) {
-		//console.log('Adding to DB disabled');
-		db.addToDb(shillName, voterName, result, voterID, linkID);
+		console.log('Adding to DB disabled');
+		//db.addToDb(shillName, voterName, result, voterID, linkID);
 	}
 }
 
