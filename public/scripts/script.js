@@ -1,13 +1,15 @@
 // set up ======================================================================
 
-const NUMBER_OF_POSTS	= 500;
-//const SUBREDDIT			= 'CryptoCurrency';
-const SUBREDDIT			= 'test';
+const NUMBER_OF_POSTS	= 100;
+const SUBREDDIT			= 'CryptoCurrency';
+//const SUBREDDIT			= 'test';
 
 var snoowrap            = require('snoowrap'),
     db                  = require('./db.js'),
-	treatedCache		= new Array(NUMBER_OF_POSTS),
-	cachePointer		= 0;
+	treatedCache		= new Array(NUMBER_OF_POSTS * 2),
+	cachePointer		= 0,
+	totalComments		= 0,
+	totalVotes			= 0;
 
 // configuration ===============================================================
 
@@ -34,7 +36,7 @@ module.exports = {
      * */
     scrape: function()
 	{
-		print('Fetching comments and processing...');
+		print('Fetching comments from /r/' + SUBREDDIT + ' and processing...');
 
 		// commentObj stores a returned promise containing X comments as JSON
         var commentObj = r.getNewComments(SUBREDDIT, { limit: NUMBER_OF_POSTS });	
@@ -44,6 +46,10 @@ module.exports = {
             listing.forEach(function(key) {
 				//Check if we haven't already processed this comment
 				var commentId = key.id;
+				
+				//dump(commentId);
+				//dump(treatedCache);
+				
 				var treated = treatedCache.includes(commentId); 
 				
 				if (!treated) 
@@ -54,13 +60,17 @@ module.exports = {
 					 * handle the database insertions and commenting
 					 * */
 
+					//dump(key.body);
+					
 					var comment = key.body.substring(0,10).toLowerCase();
 					
 					if(comment.includes("good shill")) {
+						totalVotes++;
 						print("Found comment '" + key.body + "'");
 						_storeVote(key, "good");
 					}
 					else if(comment.includes("bad shill")) {
+						totalVotes++;
 						print("Found comment '" + key.body + "'");
 						_storeVote(key, "bad");
 					}
@@ -74,7 +84,9 @@ module.exports = {
 				}*/
             });
 			
-			print(newComments + ' new comments treated.');
+			totalComments += newComments;
+			print('[' + newComments + '] new comments treated.');
+			print('[' + totalComments + '] comments total, [' + totalVotes + '] votes total.');
         });
     }
 };
@@ -108,9 +120,9 @@ function _storeVote(commentObj, result) {
 
 function markAsTreated(commentId) //Rolling array
 {
-	treatedCache[cachePointer++] = commentId;
-	if (cachePointer >= NUMBER_OF_POSTS) cachePointer = 0;
 	//print('cachePointer [' + cachePointer + ']');
+	treatedCache[cachePointer] = commentId;
+	if (++cachePointer >= NUMBER_OF_POSTS * 2) cachePointer = 0;
 }
 
 function checkAndAddShill(shillObj, commentObj, result)
